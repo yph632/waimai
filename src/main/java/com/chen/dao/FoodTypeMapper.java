@@ -9,6 +9,10 @@ import org.apache.ibatis.annotations.Update;
 
 import com.chen.entity.FoodType;
 
+/**
+ *@Author 陈润航 
+ */
+
 public interface FoodTypeMapper {
 
 	@Select(" select id, ftname, ftindex, bsid from t_foodtype where bsid = #{bsid} ")
