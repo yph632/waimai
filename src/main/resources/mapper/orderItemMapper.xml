@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chen.dao.OrderItemMapper">
+
+	
+	
+	<insert id="saveOrderItem" parameterType="Order" useGeneratedKeys="true" keyProperty="id">
+		insert into t_orderitem
+			(itemname, itemprice, itemnum, orderid, foodid)
+			values
+			(#{itemname},#{itemprice},#{itemnum},#{orderid},#{foodid})
+	</insert>
+	
+	<select id="findOrderItemByOrderId" parameterType="long" resultMap="orderItemMap">
+		select id, itemname, itemprice, itemnum, orderid, foodid from t_orderitem where orderid=#{orderid}
+	</select>
+	
+	
+	<resultMap id="orderItemMap" type="OrderItem">
+		<id property="id" column="id"/>
+		<result property="itemname" column="itemname"/>
+		<result property="itemprice" column="itemprice"/>
+		<result property="itemnum" column="itemnum"/>
+		<result property="orderid" column="orderid"/>
+		<result property="foodid" column="foodid"/>
+	</resultMap>
+	
+</mapper>

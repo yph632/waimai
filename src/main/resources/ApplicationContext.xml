@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+<!--  default-autowire="constructor">
+ -->
+ 
+ 	<!--  添加组件扫描 -->
+ 	<context:component-scan base-package="com.chen">
+ 		<context:exclude-filter type="annotation"
+ 			expression="org.springframework.stereotype.Controller"/>
+ 	</context:component-scan>
+ 
+ 
+ 	<!-- 读取ClassPath中的properties配置文件 -->
+    <context:property-placeholder location="classpath:*.properties"/>
+
+    <!-- 配置DBCP数据源 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+                                                destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="maxWait" value="5000"/>
+    </bean>
+ 
+ 	
+ 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+ 		<property name="dataSource" ref="dataSource"/>
+ 	</bean>
+ 	
+ 	<!-- 整合MyBatis -->
+ 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+ 		<property name="dataSource" ref="dataSource"/>
+ 		<property name="typeAliasesPackage" value="com.chen.entity"/>
+ 		<!--  将resources/mapper的所有mapper xml的配置文件加载 -->
+ 		<property name="mapperLocations" value="classpath*:mapper/*.xml"/>
+ 	</bean>
+ 	<!-- 自动扫描dao包中的Mapper接口，并放入spring容器 -->
+ 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+ 		<property name="basePackage" value="com.chen.dao"/> 
+ 	</bean>
+ 	
+ 	<!-- 基于注解的事务 -->
+ 	<tx:annotation-driven transaction-manager="transactionManager"/>
+ 	
+ 	
+	
+	<aop:aspectj-autoproxy/>
+	
+</beans>
+
+<!-- 
+	 配置jdbc Template 
+ 	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+ 		<constructor-arg name="dataSource" ref="dataSource"/>
+ 	</bean>-->
+<!-- 基于xml的事物 -->
+ 	<!-- <tx:advice id="txAdvice" transaction-manager="transactionManager">
+ 		<tx:attributes>
+ 			<tx:method name="*find*"/>
+ 			<tx:method name="del*"/>
+ 			<tx:method name="save*"/>
+ 			<tx:method name="update*"/>
+ 		</tx:attributes>
+ 	</tx:advice>
+ 	
+ 	<aop:config>
+ 		<aop:pointcut expression="execution(* com.chen.service..*.*(..))" id="pointcut"/>
+ 		<aop:advisor pointcut-ref="pointcut" advice-ref="txAdvice"/>
+ 	</aop:config>
+ 	-->
+<!-- 
+
+
+ 	 配置NamedParameterJdbcTemplate 
+ 	 <bean id="nameJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+ 	 	<constructor-arg name="dataSource" ref="dataSource"/>
+ 	 </bean>
+	<bean id="myAspect" class="com.chen.spring.MyAspect"/>
+	
+	<aop:config>
+		<aop:aspect ref="myAspect">
+			<aop:pointcut expression="execution(* com.chen.spring.dao..*.*(..))" id="myPointcut"/>
+			<aop:before method="beforeAdvice" pointcut-ref="myPointcut"/>
+			<aop:after-returning method="afterReturning" returning="obj" pointcut-ref="myPointcut"/>
+			<aop:after-throwing method="throwAdvice" pointcut-ref="myPointcut"
+						throwing="ex"/>
+			<aop:after method="finallyAdvice" pointcut-ref="myPointcut"/>
+			
+		</aop:aspect>
+	</aop:config>
+	
+	-->
+<!-- 
+	<bean id="userDao" class="com.chen.spring.dao.UserDao"
+		init-method="init" destroy-method="destroy" scope="singleton"/>
+	<bean id="userDao2" class="com.chen.spring.dao.UserDao2"/>
+	<bean id="bookDao" class="com.chen.spring.dao.BookDao"/>
+	<alias name="userDao" alias="ud"/>
+	
+	<bean id="userService" class="com.chen.spring.service.UserService">
+		<property name="userDao" ref="userDao"/>
+		<property name="bookDao" ref="bookDao"/>
+	</bean>
+	
+	<bean id="demoDao" class="com.chen.spring.dao.DemoDao">
+		<property name="port" value="7788"/>
+		<property name="name" value="tom"/>
+		<property name="addresses" >
+			<list>
+				<value>中国</value>
+				<value>美国</value>
+			</list>
+		</property>
+		<property name="tels">
+			<set>
+				<value>"123"</value>
+				<value>"789"</value>
+			</set>
+		</property>
+		<property name="params">
+			<map>
+				<entry key="ke" value="123"/>
+				<entry key="kk" value="789"/>
+			</map>
+		</property>
+		<property name="prop">
+			<props>
+				<prop key="k2">dfdf</prop>
+				<prop key="k3">dfdf</prop>
+			</props> 
+		</property>
+	</bean>
+	-->
+<!-- 
+
+	
+    <bean id="userDao" class="com.chen.spring.dao.UserDao"/>
+    <bean id="userDao2" class="com.chen.spring.dao.UserDao2"/>
+    <bean id="bookDao" class="com.chen.spring.dao.BookDao"/>
+
+   	<bean id="userService" class="com.chen.spring.service.UserService"/>
+ 
+
+   
+   <bean id="userService" class="com.chen.spring.service.UserService">
+   <constructor-arg type="com.chen.spring.dao.IUserDao" ref="userDao"/>
+   <constructor-arg type="com.chen.spring.dao.BookDao" ref="bookDao"/>
+   <constructor-arg type="java.lang.String" value="Rose"/>
+   <constructor-arg type="java.util.List">
+        <list>
+           <value>A0</value>
+           <value>A1</value>
+         </list>
+    </constructor-arg>
+    </bean>
+    
+
+
+   
+    <bean id="demoDao" class="com.chen.spring.dao.DemoDao">
+        <property name="port" value="7788"/>
+        <property name="name" value="Jack"/>
+        <property name="addresses">
+            <list>
+                <value>A1</value>
+                <value>A2</value>
+            </list>
+        </property>
+        <property name="tels">
+            <set>
+                <value>S1</value>
+                <value>S2</value>
+            </set>
+        </property>
+        <property name="params">
+            <map>
+                <entry key="k1" value="v1"/>
+                <entry key="k2" value="v2"/>
+            </map>
+        </property>
+        <property name="prop">
+            <props>
+                <prop key="p1">V1</prop>
+                <prop key="p2">V2</prop>
+            </props>
+        </property>
+    </bean>
+	
+ -->

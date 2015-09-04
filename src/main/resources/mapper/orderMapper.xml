@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chen.dao.OrderMapper">
+<cache/>
+	<insert id="saveOrder" parameterType="Order" useGeneratedKeys="true" keyProperty="id">
+		insert into t_order
+			(ordercode, orderman, ordertel, orderprice, orderpostprice, ordercontent, orderaddresss, orderpaytype, orderstate, ordercreatetime, acid, bsid)
+			values
+			(#{ordercode},#{orderman},#{ordertel},#{orderprice},#{orderpostprice}, #{orderaddress}, #{ordercontent},#{orderpaytype},#{orderstate},#{ordercreatetime},#{acid},#{bsid})
+	</insert>
+
+	<select id="count" parameterType="map" resultType="long">
+		select count(*) from t_order 
+		<trim prefix="where"  prefixOverrides="AND | OR ">
+			<if test="_orderstate != null and _oraderstate != ''">
+				orderstate = #{_orderstate}
+			</if>
+			<if test="_orderpaytype != null and _orderpaytype != ''">
+				and orderpaytype = #{_orderpaytype}
+			</if>
+		</trim>
+	</select>
+	
+	<select id="findOrderByOrderId" parameterType="long" resultType="Order">
+		select id, ordercode, orderman, ordertel,orderprice, orderpostprice, ordercontent, orderaddress, orderpaytype, orderstate, ordercreatetime, acid, bsid
+		from t_order where id = #{orderid}
+	</select>
+	
+	<select id="findOrderByMap" parameterType="map" resultMap="orderMap">
+		select id, ordercode, orderman, ordertel,orderprice, orderpostprice, ordercontent, orderaddress, orderpaytype, orderstate, ordercreatetime, acid, bsid
+		from t_order
+		<where>
+			<if test="_orderstate != null and _orderstate != ''">
+				orderstate = #{_orderstate}
+			</if>
+			<if test="_ordercode != null">
+				and ordercode = #{_ordercode}
+			</if>
+			<if test="_orderpaytype != null and _orderpaytype != ''">
+				and orderpaytype = #{_orderpaytype}
+			</if>
+		</where>
+		<if test="pageStart != null and pageSize != null">
+			limit ${pageStart}, ${pageSize}
+		</if>
+	</select>
+	
+	<select id="findOrderByOrderCode" parameterType="string" resultType="list" resultMap="orderMap">
+		select id, ordercode, orderman, ordertel,orderprice, orderpostprice, ordercontent, orderaddress, orderpaytype, orderstate, ordercreatetime, acid, bsid
+		from t_order where ordercode = #{orderCode}
+	</select>
+
+	<select id="findOrderByAccountId" parameterType="long" resultType="list" resultMap="orderMap">
+		select id, ordercode, orderman, ordertel,orderprice, orderpostprice, ordercontent, orderaddress, orderpaytype, orderstate, ordercreatetime, acid, bsid
+		from t_order where acid = #{accountId}
+	</select>
+	
+	<resultMap id="orderMap" type="Order">
+		<id property="id" column="id" />
+		<result property="ordercode" column="ordercode"/>
+		<result property="orderman" column="orderman"/>
+		<result property="ordertel" column="ordertel"/>
+		<result property="orderprice" column="orderprice"/>
+		<result property="orderpostprice" column="orderpostprice"/>
+		<result property="ordercontent" column="ordercontent"/>
+		<result property="orderaddress" column="orderaddresss"/>
+		<result property="orderpaytype" column="orderpaytype"/>
+		<result property="orderstate" column="orderstate"/>
+		<result property="ordercreatetime" column="ordercreatetime"/>
+		<result property="acid" column="acid"/>
+		<result property="bsid" column="bsid"/>
+	</resultMap>
+	
+	<select id="findAllStatictics" parameterType="long" resultType="map">
+		select count(*),sum(orderprice) from t_order 
+		where bsid = #{businessId}
+	</select>
+	
+	<select id="findTadayStatictics" resultType="map">
+		SELECT count(*),sum(orderprice) FROM t_order 
+        WHERE bsid = #{businessId} AND DATE(ordercreatetime) = #{today}
+	</select>
+	
+	
+	<update id="changeOrderState" parameterType="string">
+		update t_order set orderstate=#{ordercreatetime} where id=#{id}
+	</update>
+	
+	<select id="findOrderTopByBsid" parameterType="long" resultMap="orderMap">
+		select id, ordercode, orderman, ordertel,orderprice, orderpostprice, ordercontent, orderaddress, orderpaytype, orderstate, ordercreatetime, acid, bsid
+		from t_order where bsid = #{bsid} order by orderprice desc limit 0, 10 
+	</select>
+	
+	
+	
+</mapper>

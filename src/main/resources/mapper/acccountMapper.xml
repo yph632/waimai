@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.chen.dao.AccountMapper">
+	
+	<insert id="save" parameterType="Account" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO t_account
+		(acname, acpassword,accreatetime, aclogintime, acloginip, acnickname)
+		values
+		(#{acname}, #{acpassword}, #{accreatetime}, #{aclogintime}, #{acloginip}, #{acnickname})
+
+	</insert>
+	
+	<select id="isBusinessByPhone" parameterType="string" resultType="account">
+		SELECT id, acname, acpassword, accreatetime, aclogintime, acloginip, acnickname 
+			FROM t_account where acname = #{phone}
+	</select>
+
+	<select id="findAccountByPhone" parameterType="string" resultType="account">
+		SELECT id, acname, acpassword, accreatetime, aclogintime, acloginip, acnickname 
+			FROM t_account
+			where acname = #{phone}
+	</select>
+	
+	<resultMap id="accountMap" type="Account">
+		<id property="id" column="id"/>
+      	<result property="acname" column="acname"/>
+      	<result property="acpassword" column="acpassword"/>
+      	<result property="accreatetime" column="accreatetime"/>
+      	<result property="aclogintime" column="aclogintime"/>
+      	<result property="acloginip" column="acloingip"/>
+      	
+	</resultMap>
+	
+</mapper>

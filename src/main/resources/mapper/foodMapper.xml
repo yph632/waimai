@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.chen.dao.FoodMapper">
+
+	<select id="count" parameterType="map" resultType="long">
+		select count(*) from t_food
+		<where>
+				<if test="bsid != null">
+					bsid = #{bsid}
+				</if>
+				<if test="_fname != null">
+					and fname like '%${_fname}%'
+				</if>
+				<if test="_ftid != null">
+					and ftid = #{_ftid}
+				</if>
+			</where>
+				
+	</select>
+
+	<select id="findFoodByMap" parameterType="map" resultType="list" resultMap="foodMap">
+		SELECT f.id , fname, fprice, fphoto, findex, fsales, f.ftid, f.bsid, ftname 
+			FROM t_food AS f
+			LEFT JOIN t_foodtype AS ft ON f.ftid = ft.id
+			LEFT JOIN t_business AS bs ON f.bsid = bs.id
+			<where>
+				<if test="bsid != null">
+					f.bsid = #{bsid}
+				</if>
+				<if test="_fname != null">
+					and fname like '%${_fname}%'
+				</if>
+				<if test="_findex !=null">
+					and findex = #{_findex}
+				</if>
+				<if test="_ftid != null">
+					and f.ftid = #{_ftid}
+				</if>
+			</where>
+			order by findex desc,id desc
+			<if test="pageStart != null and pageSize != null">
+				limit ${pageStart}, ${pageSize}
+			</if>
+	</select>
+	
+	<resultMap id="foodMap" type="Food">
+		<id property="id" column="id" />
+		<result property="fname" column="fname"/>
+		<result property="fprice" column="fprice"/>
+		<result property="fphoto" column="fphoto"/>
+		<result property="findex" column="findex"/>
+		<result property="fsales" column="fsales"/>
+		<result property="ftid" column="ftid"/>
+		<result property="bsid" column="bsid"/>
+		<association property="foodType" column="ftid" javaType="FoodType">
+     	 	<id property="id" column="ftid"/>
+     	 	<result property="ftname" column="ftname"/>
+     	</association>
+	
+	</resultMap>
+
+	<insert id="saveFood" parameterType="Food" useGeneratedKeys="true" keyProperty="id" >
+		insert into t_food (fname, fprice, fphoto, findex, fsales, ftid, bsid)
+			values(#{fname},#{fprice},#{fphoto},#{findex},#{fsales},#{ftid},#{bsid})
+	</insert>
+	
+	<select id="findFoodById" parameterType="long" resultType="list" resultMap = "foodMap">
+		SELECT f.id , fname, fprice, fphoto, findex, fsales, f.ftid, f.bsid, ftname 
+			FROM t_food AS f
+			LEFT JOIN t_foodtype AS ft ON f.ftid = ft.id
+			LEFT JOIN t_business AS bs ON f.bsid = bs.id
+		where f.id = #{id}
+	</select>
+
+
+
+	<update id="editFood" parameterType = "Food">
+		update t_food
+		<set>
+			<if test="fname != null and fname !=''">
+				fname=#{fname},
+			</if>
+			<if test="fprice != null and fprice !=''">
+				fprice=#{fprice},
+			</if>
+			<if test="fphoto != null and fphoto !=''">
+				fphoto=#{fphoto},
+			</if>
+			<if test="findex != null and findex !=''">
+				findex=#{findex},
+			</if>
+			<if test="fsales != null and fsales !=''">
+				fsales=#{fsales},
+			</if>
+			<if test="ftid != null and ftid !=''">
+				ftid=#{ftid},
+			</if>
+			<if test="bsid != null and bsid !=''">
+				bsid=#{bsid},
+			</if>
+		</set>
+		where id =#{id} 
+	</update>
+
+	
+</mapper>

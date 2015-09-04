@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.chen.dao.BusinessMapper">
+
+
+	<insert id="save" parameterType="Business">
+		insert into t_business
+		(bsname, bsaddress, bsman, bstel, bscontent, bslat, bslng, bscardphoto, bscardnum, bscardaddress, bstype, acid)
+		values
+		(#{bsname},#{bsaddress},#{bsman},#{bstel},#{bscontent},#{bslat},#{bslng},#{bscardphoto},#{bscardnum},#{bscardaddress},#{bstype},#{acid})
+	</insert>
+	
+	<update id="updateBusinessInfo" parameterType="Business">
+		update t_business
+		<set>
+			<if test="bscontent != null">
+				bscontent = #{bscontent},
+			</if>
+			<if test="bspoststartprice != null">
+				bspoststartprice = #{bspoststartprice},
+			</if>
+			<if test="bspostprice != null and bspostprice != ''">
+				bspostprice = #{bspostprice},		
+			</if>
+			<if test="bsphoto != null">
+				bsphoto = #{bsphoto},
+			</if>
+			<if test="bsamhourstart != null">
+				bsamhourstart = #{bsamhourstart},
+			</if>
+			<if test="bsamhourend != null">
+				bsamhourend = #{bsamhourend},
+			</if>
+			<if test="bspmhourstart != null">
+				bspmhourstart = #{bspmhourstart},
+			</if>
+			<if test="bspmhourend != null">
+				bspmhourend = #{bspmhourend}
+			</if>
+		</set>
+		where id= #{id}
+	</update>
+
+	<!--  <select id="findBusinessById" parameterType="long" resultType="Business">
+		select id, bsname, bsaddress, bsman, bstel, bscontent, bslat, bslng, bscardphoto, bscardnum,bscardaddress, bstype, bspoststartprice, bspostprice, bsphoto, bsamhourstart, acid, bsamhourend, bspmhourstart, bspmhourend
+		 from t_business 
+		 where id = #{id}
+	</select>
+-->
+	<!--<select id="findBusinessByAcid" parameterType="long" resultTy="Business">
+		select id, bsname, bsaddress, bsman. bstel, bscontent,bslat,balng,bscardphoto,bacardnum,bscardaddress, bstype
+			from t_business where acid = #{acid}
+	</select>
+	-->
+
+</mapper>
