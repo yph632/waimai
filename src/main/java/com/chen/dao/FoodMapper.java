@@ -9,7 +9,9 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.chen.entity.Food;
-
+/**
+ * @Author 陈润航
+ * */
 public interface FoodMapper {
 
 	
