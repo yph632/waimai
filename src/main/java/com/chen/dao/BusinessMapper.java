@@ -6,7 +6,9 @@ import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Select;
 
 import com.chen.entity.Business;
-
+/**
+ * @author 陈润航
+ * */
 @CacheNamespace
 public interface BusinessMapper {
 
