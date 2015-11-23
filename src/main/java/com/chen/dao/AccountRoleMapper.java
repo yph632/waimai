@@ -4,6 +4,9 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+/**
+ *@Author 陈润航
+ */
 public interface AccountRoleMapper {
 
 	@Insert("insert t_account_role(aid, rid)values(#{aid}, #{rid})")
